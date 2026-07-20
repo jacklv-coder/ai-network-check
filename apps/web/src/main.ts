@@ -1,7 +1,17 @@
 import "./styles.css";
 import "./result-details.css";
+import "./history.css";
 
-import { listServices } from "@ai-network-check/core";
+import { listServices, type BenchmarkReport } from "@ai-network-check/core";
+import {
+  aggregateRouteHistory,
+  clearReportHistory,
+  createJsonReportExport,
+  createTextReportExport,
+  readReportHistory,
+  saveReportToHistory,
+  type BenchmarkReportExport
+} from "@ai-network-check/web-reporting";
 import {
   runWebBenchmarkWorkflow,
   WebBenchmarkWorkflowCancelledError,
@@ -16,6 +26,7 @@ import {
   type WebAppState
 } from "./state.ts";
 import { renderResultDetails } from "./result-view.ts";
+import { renderRouteHistory } from "./history-view.ts";
 
 const appRoot = document.querySelector("#app");
 
@@ -36,6 +47,15 @@ let state = createInitialWebAppState({
   selectedServiceIds: services.map((service) => service.id)
 });
 let activeController: AbortController | null = null;
+let historyReports: readonly BenchmarkReport[] = readHistorySafely();
+
+function readHistorySafely(): readonly BenchmarkReport[] {
+  try {
+    return readReportHistory(localStorage);
+  } catch {
+    return [];
+  }
+}
 
 function escapeHtml(value: string): string {
   return value.replace(
@@ -160,7 +180,11 @@ function renderResult(currentState: WebAppState): string {
         </div>
       </div>
       ${renderResultDetails(report, services)}
-      <button id="reset-button" class="primary-button result-reset" type="button">重新检测</button>
+      <div class="result-actions">
+        <button id="copy-report-button" type="button">复制文本报告</button>
+        <button id="download-report-button" type="button">下载 JSON</button>
+        <button id="reset-button" type="button">重新检测</button>
+      </div>
     </section>
   `;
 }
@@ -210,6 +234,7 @@ function render(): void {
       </section>
 
       <section class="app-card">${stateContent(state)}</section>
+      ${state.phase === "running" ? "" : renderRouteHistory(aggregateRouteHistory(historyReports), services)}
 
       <footer>
         <span>AI Network Check</span>
@@ -301,6 +326,11 @@ async function startBenchmark(): Promise<void> {
       signal: activeController.signal,
       onProgress: handleProgress
     });
+    try {
+      historyReports = saveReportToHistory(localStorage, report);
+    } catch {
+      // Storage may be unavailable in private browsing. The report remains usable.
+    }
     dispatch({ type: "complete", report });
   } catch (error) {
     if (
@@ -319,6 +349,42 @@ async function startBenchmark(): Promise<void> {
   }
 }
 
+function downloadExport(file: BenchmarkReportExport): void {
+  const url = URL.createObjectURL(new Blob([file.content], { type: file.mimeType }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = file.filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function showToast(message: string): void {
+  document.querySelector(".toast")?.remove();
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+  document.body.append(toast);
+  window.setTimeout(() => toast.remove(), 1600);
+}
+
+async function copyCurrentReport(): Promise<void> {
+  if (!state.report) return;
+  const text = createTextReportExport(state.report).content;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.append(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+  showToast("报告已复制");
+}
+
 function bindEvents(): void {
   root.querySelector<HTMLFormElement>("#benchmark-form")?.addEventListener(
     "submit",
@@ -334,6 +400,26 @@ function bindEvents(): void {
   root.querySelector<HTMLButtonElement>("#reset-button")?.addEventListener(
     "click",
     () => dispatch({ type: "reset" })
+  );
+  root.querySelector<HTMLButtonElement>("#copy-report-button")?.addEventListener(
+    "click",
+    () => void copyCurrentReport()
+  );
+  root.querySelector<HTMLButtonElement>("#download-report-button")?.addEventListener(
+    "click",
+    () => state.report && downloadExport(createJsonReportExport(state.report))
+  );
+  root.querySelector<HTMLButtonElement>("#clear-history-button")?.addEventListener(
+    "click",
+    () => {
+      try {
+        clearReportHistory(localStorage);
+      } catch {
+        // Ignore unavailable storage and still clear the in-memory view.
+      }
+      historyReports = [];
+      render();
+    }
   );
 }
 
