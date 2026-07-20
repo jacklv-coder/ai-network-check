@@ -16,3 +16,18 @@ export type {
   ServiceEndpoint,
   VerificationLimitation
 } from "./catalog/types.ts";
+export {
+  average,
+  meanAbsoluteSuccessiveDifference,
+  percentile,
+  populationStandardDeviation,
+  summarizeBenchmarkSamples,
+  summarizeLatency
+} from "./metrics/metrics.ts";
+export { BENCHMARK_SAMPLE_STATUSES } from "./metrics/types.ts";
+export type {
+  BenchmarkMetrics,
+  BenchmarkSample,
+  BenchmarkSampleStatus,
+  LatencyMetrics
+} from "./metrics/types.ts";
