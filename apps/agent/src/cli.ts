@@ -12,6 +12,7 @@ console.log("AI Network Check Agent");
 console.log(`Listening: ${server.origin}`);
 console.log(`Session token: ${server.token}`);
 console.log("The fixed real Codex benchmark API is enabled.");
+console.log("Catalog-bound DNS/TCP/TLS/TTFB benchmark APIs are enabled.");
 console.log("The session token is not stored by the web application.");
 
 async function shutdown(): Promise<void> {

@@ -1,3 +1,4 @@
+export { runCatalogNetworkPhaseBenchmark } from "./network-phases.ts";
 export { startAgentServer } from "./server.ts";
 export type {
   AgentCapabilityStatus,
@@ -7,5 +8,7 @@ export type {
   AgentStatusResponse,
   CodexBenchmarkApiResponse,
   LoopbackHost,
+  NetworkPhaseEndpointApiResult,
+  NetworkPhaseServiceApiResponse,
   RunningAgentServer
 } from "./types.ts";
