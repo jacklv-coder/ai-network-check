@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts packages/web-workflow/test/*.test.ts packages/web-reporting/test/*.test.ts packages/websocket-benchmark/test/*.test.ts packages/cli-benchmark/test/*.test.ts apps/web/test/*.test.ts apps/agent/test/*.test.ts",
+    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts packages/web-workflow/test/*.test.ts packages/web-reporting/test/*.test.ts packages/websocket-benchmark/test/*.test.ts packages/cli-benchmark/test/*.test.ts packages/network-phase-benchmark/test/*.test.ts apps/web/test/*.test.ts apps/agent/test/*.test.ts",
     "dev:web": "npm run dev -w @ai-network-check/web",
     "build:web": "npm run build -w @ai-network-check/web",
     "start:agent": "npm run start -w @ai-network-check/agent"
