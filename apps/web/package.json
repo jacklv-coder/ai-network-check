@@ -12,7 +12,8 @@
   "dependencies": {
     "@ai-network-check/core": "0.0.0",
     "@ai-network-check/web-reporting": "0.0.0",
-    "@ai-network-check/web-workflow": "0.0.0"
+    "@ai-network-check/web-workflow": "0.0.0",
+    "@ai-network-check/websocket-benchmark": "0.0.0"
   },
   "devDependencies": {
     "typescript": "7.0.2",
