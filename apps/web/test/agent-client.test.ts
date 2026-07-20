@@ -4,7 +4,8 @@ import test from "node:test";
 import {
   AgentApiError,
   createAgentRequest,
-  runAgentCodexBenchmark
+  runAgentCodexBenchmark,
+  runAgentNetworkPhaseBenchmark
 } from "../src/agent-client.ts";
 
 const connection = { port: 3210, token: "x".repeat(32) };
@@ -81,6 +82,48 @@ test("parses the fixed Codex response", async () => {
   );
   assert.equal(result.result.status, "success");
   assert.equal(result.promptId, "reply-exactly-ok-v1");
+});
+
+test("submits only a validated service ID for network phase checks", async () => {
+  let captured: Request | null = null;
+  const result = await runAgentNetworkPhaseBenchmark(
+    connection,
+    "openai",
+    undefined,
+    async (request) => {
+      captured = request;
+      return new Response(
+        JSON.stringify({
+          source: "service-catalog",
+          serviceId: "openai",
+          displayName: "OpenAI",
+          cancelled: false,
+          endpoints: []
+        }),
+        { status: 200, headers: { "content-type": "application/json" } }
+      );
+    }
+  );
+
+  assert.equal(
+    captured?.url,
+    "http://127.0.0.1:3210/v1/benchmarks/network-phases/openai"
+  );
+  assert.equal(captured?.body, null);
+  assert.equal(result.source, "service-catalog");
+});
+
+test("rejects unsafe network phase service IDs before fetching", async () => {
+  await assert.rejects(
+    () =>
+      runAgentNetworkPhaseBenchmark(
+        connection,
+        "../https://evil.example",
+        undefined,
+        async () => new Response("{}")
+      ),
+    /service ID is invalid/
+  );
 });
 
 test("normalizes unreachable Agent errors", async () => {
