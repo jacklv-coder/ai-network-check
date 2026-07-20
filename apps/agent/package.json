@@ -8,7 +8,9 @@
     "test": "node --experimental-strip-types --test test/*.test.ts"
   },
   "dependencies": {
-    "@ai-network-check/cli-benchmark": "0.0.0"
+    "@ai-network-check/core": "0.0.0",
+    "@ai-network-check/cli-benchmark": "0.0.0",
+    "@ai-network-check/network-phase-benchmark": "0.0.0"
   },
   "exports": {
     ".": "./src/index.ts"
