@@ -1,13 +1,18 @@
 import { startAgentServer } from "./server.ts";
 
 const server = await startAgentServer({
-  allowedOrigins: ["https://jacklv-coder.github.io"]
+  allowedOrigins: [
+    "https://jacklv-coder.github.io",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
+  ]
 });
 
 console.log("AI Network Check Agent");
 console.log(`Listening: ${server.origin}`);
 console.log(`Session token: ${server.token}`);
-console.log("No network or CLI benchmark commands are enabled in this foundation build.");
+console.log("The fixed real Codex benchmark API is enabled.");
+console.log("The session token is not stored by the web application.");
 
 async function shutdown(): Promise<void> {
   await server.close();
