@@ -12,12 +12,13 @@ import {
 } from "./realtime-view.ts";
 
 const PUBLIC_ECHO_URL = "wss://ws.postman-echo.com/raw";
-const appRoot = document.querySelector("#app");
+const appRootElement = document.querySelector("#app");
 
-if (!(appRoot instanceof HTMLElement)) {
+if (!(appRootElement instanceof HTMLElement)) {
   throw new Error("Missing #app root element");
 }
 
+const appRoot: HTMLElement = appRootElement;
 let state: RealtimeUiState = { phase: "idle" };
 let controller: AbortController | null = null;
 let mountScheduled = false;
