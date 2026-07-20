@@ -1,4 +1,5 @@
 import "./styles.css";
+import "./result-details.css";
 
 import { listServices } from "@ai-network-check/core";
 import {
@@ -14,6 +15,7 @@ import {
   type WebAppAction,
   type WebAppState
 } from "./state.ts";
+import { renderResultDetails } from "./result-view.ts";
 
 const appRoot = document.querySelector("#app");
 
@@ -139,30 +141,26 @@ function renderRunning(currentState: WebAppState): string {
 
 function renderResult(currentState: WebAppState): string {
   const report = currentState.report;
-  if (!report) {
-    return "";
-  }
+  if (!report) return "";
+
   const score = averageServiceScore(report);
   const route = report.route ?? "未命名路线";
   return `
     <section class="state-panel result-panel" aria-live="polite">
-      <div class="score-orb">
-        <strong>${score ?? "—"}</strong>
-        <span>/ 100</span>
+      <div class="result-summary">
+        <div class="score-orb"><strong>${score ?? "—"}</strong><span>/ 100</span></div>
+        <div class="panel-heading">
+          <span class="state-kicker">Complete</span>
+          <h2>HTTPS 基础检测完成</h2>
+          <p>已完成 ${report.services.length} 个 AI 服务的浏览器基础检测。</p>
+          <div class="result-facts">
+            <div><span>路线</span><strong>${escapeHtml(route)}</strong></div>
+            <div><span>置信等级</span><strong>Browser Basic</strong></div>
+          </div>
+        </div>
       </div>
-      <div class="panel-heading centered">
-        <span class="state-kicker">Complete</span>
-        <h2>HTTPS 基础检测完成</h2>
-        <p>已完成 ${report.services.length} 个 AI 服务的浏览器基础检测。</p>
-      </div>
-      <div class="result-facts">
-        <div><span>路线</span><strong>${escapeHtml(route)}</strong></div>
-        <div><span>置信等级</span><strong>Browser Basic</strong></div>
-      </div>
-      <div class="limitation-banner">
-        WebSocket、流式输出与真实 Codex / Claude Code 请求尚未验证。
-      </div>
-      <button id="reset-button" class="primary-button" type="button">重新检测</button>
+      ${renderResultDetails(report, services)}
+      <button id="reset-button" class="primary-button result-reset" type="button">重新检测</button>
     </section>
   `;
 }
