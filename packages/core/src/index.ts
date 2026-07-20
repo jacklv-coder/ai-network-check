@@ -31,6 +31,25 @@ export type {
   BenchmarkSampleStatus,
   LatencyMetrics
 } from "./metrics/types.ts";
+export {
+  createBenchmarkReport,
+  createEndpointBenchmarkReport,
+  parseBenchmarkReport,
+  serializeBenchmarkReport,
+  validateBenchmarkReport
+} from "./report/report.ts";
+export { BENCHMARK_REPORT_SCHEMA_VERSION } from "./report/types.ts";
+export type {
+  BenchmarkMode,
+  BenchmarkReport,
+  BenchmarkReportSchemaVersion,
+  CreateBenchmarkReportInput,
+  CreateEndpointBenchmarkReportInput,
+  EndpointBenchmarkReport,
+  HttpStatusVerification,
+  ReportLimitation,
+  ServiceBenchmarkReport
+} from "./report/types.ts";
 export { scoreHttpsNetwork } from "./scoring/scoring.ts";
 export type {
   HttpsNetworkScore,
