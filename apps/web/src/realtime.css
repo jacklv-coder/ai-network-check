@@ -1,0 +1,143 @@
+.realtime-section {
+  margin-top: 28px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 22px;
+  background: rgba(11, 24, 41, .66);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .18);
+}
+
+.realtime-copy h2 {
+  margin: 9px 0 7px;
+  font-size: clamp(24px, 4vw, 34px);
+  letter-spacing: -.04em;
+}
+
+.realtime-copy p {
+  margin: 0;
+  color: #8fa2b8;
+  line-height: 1.7;
+}
+
+.realtime-boundary,
+.realtime-close {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 13px;
+  color: #9fb1c6;
+  background: rgba(110, 168, 254, .08);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.realtime-primary,
+.realtime-secondary {
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.realtime-primary {
+  border: 0;
+  background: linear-gradient(135deg, #62e6c4, #6ea8fe);
+  color: #06111f;
+}
+
+.realtime-secondary {
+  border: 1px solid rgba(148, 163, 184, .18);
+  background: rgba(5, 14, 26, .58);
+  color: #dbe6f2;
+}
+
+.realtime-running {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.realtime-pulse {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(98, 230, 196, .3);
+  box-shadow: 0 0 40px rgba(98, 230, 196, .12);
+}
+
+.realtime-pulse::before,
+.realtime-pulse span {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: rgba(98, 230, 196, .16);
+  animation: realtime-pulse 1.5s ease-in-out infinite;
+}
+
+.realtime-pulse span { inset: 34px; animation-delay: .25s; }
+@keyframes realtime-pulse { 50% { transform: scale(1.35); opacity: .35; } }
+
+.realtime-live-grid,
+.realtime-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  width: 100%;
+  margin-top: 22px;
+}
+
+.realtime-metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+.realtime-live-grid div,
+.realtime-metrics div {
+  padding: 13px;
+  border: 1px solid rgba(148, 163, 184, .11);
+  border-radius: 13px;
+  background: rgba(5, 14, 26, .46);
+}
+
+.realtime-live-grid span,
+.realtime-live-grid strong,
+.realtime-metrics span,
+.realtime-metrics strong { display: block; }
+
+.realtime-live-grid span,
+.realtime-metrics span { color: #71849b; font-size: 10px; }
+.realtime-live-grid strong,
+.realtime-metrics strong { margin-top: 5px; font-size: 17px; }
+
+.realtime-result-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.realtime-status {
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.status-completed { color: #86efac; background: rgba(74, 222, 128, .12); }
+.status-handshake-timeout,
+.status-connection-error,
+.status-closed-early { color: #fda4af; background: rgba(251, 113, 133, .12); }
+
+@media (max-width: 800px) {
+  .realtime-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .realtime-live-grid,
+  .realtime-metrics { grid-template-columns: 1fr; }
+  .realtime-result-head { flex-direction: column; }
+  .realtime-primary,
+  .realtime-secondary { width: 100%; }
+}
