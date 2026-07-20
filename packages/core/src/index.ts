@@ -31,3 +31,15 @@ export type {
   BenchmarkSampleStatus,
   LatencyMetrics
 } from "./metrics/types.ts";
+export { scoreHttpsNetwork } from "./scoring/scoring.ts";
+export type {
+  HttpsNetworkScore,
+  HttpsNetworkScoreInput,
+  ScoreCap,
+  ScoreCapId,
+  ScoreConfidence,
+  ScoreDimension,
+  ScoreDimensionId,
+  ScoreGrade,
+  UnverifiedDimensionId
+} from "./scoring/types.ts";
