@@ -1,0 +1,170 @@
+.result-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.result-actions button {
+  min-height: 46px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 13px;
+  color: #d9e4f0;
+  background: rgba(5, 14, 26, .56);
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.result-actions button:hover,
+.history-clear:hover {
+  border-color: rgba(98, 230, 196, .42);
+  color: white;
+}
+
+.history-section {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid rgba(148, 163, 184, .13);
+  border-radius: 22px;
+  background: rgba(11, 24, 41, .62);
+}
+
+.history-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.history-heading h2 {
+  margin: 8px 0 0;
+  font-size: 25px;
+  letter-spacing: -.035em;
+}
+
+.history-heading p {
+  margin: 7px 0 0;
+  color: #71849b;
+  font-size: 12px;
+}
+
+.history-clear {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 11px;
+  color: #9fb0c4;
+  background: rgba(5, 14, 26, .5);
+  cursor: pointer;
+}
+
+.history-empty {
+  padding: 30px 18px;
+  border: 1px dashed rgba(148, 163, 184, .16);
+  border-radius: 16px;
+  color: #71849b;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.route-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: 17px;
+  background: rgba(5, 14, 26, .45);
+}
+
+.route-card header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.route-card header strong,
+.route-card header span {
+  display: block;
+}
+
+.route-card header strong {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.route-card header span,
+.route-card time {
+  margin-top: 4px;
+  color: #64778f;
+  font-size: 10px;
+}
+
+.route-services {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.route-service {
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, .055);
+}
+
+.route-service span,
+.route-service strong,
+.route-service small {
+  display: block;
+}
+
+.route-service span {
+  color: #9fb0c4;
+  font-size: 10px;
+}
+
+.route-service strong {
+  margin-top: 4px;
+  color: #62e6c4;
+  font-size: 22px;
+  letter-spacing: -.04em;
+}
+
+.route-service small {
+  margin-top: 3px;
+  color: #5f7289;
+  font-size: 9px;
+}
+
+.toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 20;
+  padding: 11px 14px;
+  border: 1px solid rgba(98, 230, 196, .28);
+  border-radius: 12px;
+  color: #dffcf4;
+  background: rgba(8, 28, 31, .92);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .28);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .route-grid { grid-template-columns: 1fr; }
+  .result-actions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .history-section { padding: 18px 14px; }
+  .history-heading { align-items: start; flex-direction: column; }
+  .route-services { grid-template-columns: 1fr; }
+}
