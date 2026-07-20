@@ -1,14 +1,21 @@
 import "./agent.css";
 
+import { listServices } from "@ai-network-check/core";
 import {
   AgentApiError,
   cancelAgentCodexBenchmark,
+  cancelAgentNetworkPhaseBenchmark,
   connectAgent,
   runAgentCodexBenchmark,
+  runAgentNetworkPhaseBenchmark,
   type AgentConnection,
   type AgentStatusResponse
 } from "./agent-client.ts";
-import { renderAgentPanel, type AgentUiState } from "./agent-view.ts";
+import {
+  renderAgentPanel,
+  type AgentServiceOption,
+  type AgentUiState
+} from "./agent-view.ts";
 
 const appRootElement = document.querySelector("#app");
 
@@ -17,6 +24,9 @@ if (!(appRootElement instanceof HTMLElement)) {
 }
 
 const appRoot: HTMLElement = appRootElement;
+const agentServices: readonly AgentServiceOption[] = listServices().map(
+  (service) => ({ id: service.id, label: service.displayName })
+);
 let state: AgentUiState = { phase: "disconnected" };
 let connection: AgentConnection | null = null;
 let requestController: AbortController | null = null;
@@ -52,7 +62,7 @@ function renderPanel(): void {
   mount ??= createMount();
   if (!mount) return;
 
-  mount.innerHTML = renderAgentPanel(state);
+  mount.innerHTML = renderAgentPanel(state, agentServices);
   bindPanelEvents(mount);
 }
 
@@ -72,7 +82,8 @@ function describeAgentError(error: unknown): string {
         "无法访问 127.0.0.1。确认 Agent 已启动，并允许浏览器访问 loopback 网络。",
       unauthorized: "会话令牌无效或 Agent 已重新启动，请粘贴最新令牌。",
       "origin-not-allowed": "当前网页来源未被本地 Agent 允许。",
-      "benchmark-already-running": "本地 Agent 已有一个 Codex 检测正在运行。",
+      "benchmark-already-running": "本地 Agent 已有一个检测正在运行。",
+      "unknown-service": "本地 Agent 不认识这个 AI 服务，请更新项目后重试。",
       "request-cancelled": "请求已取消。"
     };
     return messages[error.code] ?? `Agent 请求失败：${error.code}`;
@@ -120,6 +131,45 @@ async function runCodex(status: AgentStatusResponse): Promise<void> {
     } else {
       setState({
         phase: "error",
+        operation: "codex",
+        status,
+        message: describeAgentError(error)
+      });
+    }
+  } finally {
+    if (requestController === controller) requestController = null;
+  }
+}
+
+async function runNetworkPhases(
+  status: AgentStatusResponse,
+  serviceId: string
+): Promise<void> {
+  if (!connection) return;
+  const serviceName =
+    agentServices.find((service) => service.id === serviceId)?.label ?? serviceId;
+  requestController?.abort();
+  const controller = new AbortController();
+  requestController = controller;
+  setState({ phase: "network-running", status, serviceId, serviceName });
+
+  try {
+    const benchmark = await runAgentNetworkPhaseBenchmark(
+      connection,
+      serviceId,
+      controller.signal
+    );
+    if (!controller.signal.aborted) {
+      setState({ phase: "network-result", status, benchmark });
+    }
+  } catch (error) {
+    if (controller.signal.aborted) {
+      setState({ phase: "connected", status });
+    } else {
+      setState({
+        phase: "error",
+        operation: "network",
+        serviceId,
         status,
         message: describeAgentError(error)
       });
@@ -141,11 +191,33 @@ async function stopCodex(status: AgentStatusResponse): Promise<void> {
   setState({ phase: "connected", status });
 }
 
+async function stopNetworkPhases(status: AgentStatusResponse): Promise<void> {
+  requestController?.abort();
+  if (connection) {
+    try {
+      await cancelAgentNetworkPhaseBenchmark(connection);
+    } catch {
+      // Disconnecting the POST request also aborts the active network phase run.
+    }
+  }
+  setState({ phase: "connected", status });
+}
+
 function disconnect(): void {
   requestController?.abort();
   requestController = null;
   connection = null;
   setState({ phase: "disconnected" });
+}
+
+function currentStatus(): AgentStatusResponse | null {
+  return "status" in state ? state.status ?? null : null;
+}
+
+function selectedNetworkService(mount: HTMLElement): string | null {
+  return (
+    mount.querySelector<HTMLSelectElement>("#agent-network-service")?.value ?? null
+  );
 }
 
 function bindPanelEvents(mount: HTMLElement): void {
@@ -161,18 +233,27 @@ function bindPanelEvents(mount: HTMLElement): void {
   mount
     .querySelector<HTMLButtonElement>("#agent-run-button")
     ?.addEventListener("click", () => {
-      if (
-        state.phase === "connected" ||
-        state.phase === "result" ||
-        state.phase === "error"
-      ) {
-        if (state.status) void runCodex(state.status);
-      }
+      const status = currentStatus();
+      if (status) void runCodex(status);
+    });
+  mount
+    .querySelector<HTMLButtonElement>("#agent-network-run-button")
+    ?.addEventListener("click", () => {
+      const status = currentStatus();
+      const serviceId = selectedNetworkService(mount);
+      if (status && serviceId) void runNetworkPhases(status, serviceId);
     });
   mount
     .querySelector<HTMLButtonElement>("#agent-stop-button")
     ?.addEventListener("click", () => {
       if (state.phase === "running") void stopCodex(state.status);
+    });
+  mount
+    .querySelector<HTMLButtonElement>("#agent-network-stop-button")
+    ?.addEventListener("click", () => {
+      if (state.phase === "network-running") {
+        void stopNetworkPhases(state.status);
+      }
     });
 }
 

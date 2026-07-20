@@ -1,0 +1,162 @@
+.agent-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.agent-tool-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: 16px;
+  background: rgba(5, 14, 26, .42);
+}
+
+.agent-tool-card h3 {
+  margin: 7px 0 6px;
+  font-size: 19px;
+  letter-spacing: -.03em;
+}
+
+.agent-tool-card p {
+  min-height: 44px;
+  margin: 0;
+  color: #8092a8;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.agent-tool-card .agent-primary {
+  width: 100%;
+}
+
+.agent-tool-card button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.agent-service-select {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+  color: #aebdce;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.agent-service-select select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 12px;
+  outline: none;
+  color: #edf4fb;
+  background: rgba(5, 14, 26, .65);
+}
+
+.agent-phase-list {
+  display: grid;
+  gap: 11px;
+  margin-top: 20px;
+}
+
+.agent-phase-endpoint {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: 16px;
+  background: rgba(5, 14, 26, .44);
+}
+
+.agent-phase-endpoint > header,
+.agent-phase-endpoint > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 15px;
+}
+
+.agent-phase-endpoint > header {
+  border-bottom: 1px solid rgba(148, 163, 184, .09);
+}
+
+.agent-phase-endpoint > footer {
+  border-top: 1px solid rgba(148, 163, 184, .08);
+  color: #65788f;
+  font-size: 9px;
+}
+
+.agent-phase-endpoint header strong,
+.agent-phase-endpoint header small {
+  display: block;
+}
+
+.agent-phase-endpoint header strong {
+  font-size: 14px;
+}
+
+.agent-phase-endpoint header small {
+  margin-top: 3px;
+  color: #65788f;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.agent-phase-endpoint header > span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.agent-phase-endpoint.tone-success header > span {
+  color: #86efac;
+  background: rgba(74, 222, 128, .1);
+}
+
+.agent-phase-endpoint.tone-bad header > span {
+  color: #fda4af;
+  background: rgba(251, 113, 133, .1);
+}
+
+.agent-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 13px 15px;
+}
+
+.agent-phase-grid div {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 11px;
+  background: rgba(148, 163, 184, .05);
+}
+
+.agent-phase-grid span,
+.agent-phase-grid strong {
+  display: block;
+}
+
+.agent-phase-grid span {
+  color: #71849b;
+  font-size: 9px;
+}
+
+.agent-phase-grid strong {
+  margin-top: 4px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .agent-tools-grid { grid-template-columns: 1fr; }
+  .agent-tool-card p { min-height: 0; }
+  .agent-phase-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .agent-phase-grid { grid-template-columns: 1fr; }
+  .agent-phase-endpoint > footer { align-items: flex-start; flex-direction: column; }
+}
