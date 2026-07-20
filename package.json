@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts"
+    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts packages/web-workflow/test/*.test.ts"
   },
   "engines": {
     "node": ">=22.6.0"
