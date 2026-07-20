@@ -76,7 +76,8 @@ function scheduleMount(): void {
 
 async function startRealtimeBenchmark(): Promise<void> {
   controller?.abort();
-  controller = new AbortController();
+  const runController = new AbortController();
+  controller = runController;
   setState({ phase: "running", progress: null });
 
   try {
@@ -86,15 +87,19 @@ async function startRealtimeBenchmark(): Promise<void> {
       durationMs: 20_000,
       heartbeatIntervalMs: 2_000,
       heartbeatTimeoutMs: 5_000,
-      signal: controller.signal,
+      signal: runController.signal,
       onProgress: (progress: WebSocketBenchmarkProgress) => {
-        setState({ phase: "running", progress });
+        if (!runController.signal.aborted) {
+          setState({ phase: "running", progress });
+        }
       }
     });
-    setState({ phase: "result", result });
+    if (!runController.signal.aborted) {
+      setState({ phase: "result", result });
+    }
   } catch (error) {
     if (
-      controller.signal.aborted ||
+      runController.signal.aborted ||
       error instanceof WebSocketBenchmarkCancelledError
     ) {
       setState({ phase: "idle" });
@@ -105,7 +110,9 @@ async function startRealtimeBenchmark(): Promise<void> {
       });
     }
   } finally {
-    controller = null;
+    if (controller === runController) {
+      controller = null;
+    }
   }
 }
 
