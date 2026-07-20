@@ -245,7 +245,6 @@ export function renderAgentPanel(
           <div><span>退出码</span><strong>${result.exitCode ?? "—"}</strong></div>
           <div><span>完整完成事件</span><strong>${result.sawTurnCompleted ? "是" : "否"}</strong></div>
         </div>
-        <button id="agent-run-button" class="agent-primary" type="button">再次运行真实 Codex 检测</button>
         ${renderReadyTools(status, services)}
       </section>
     `;
