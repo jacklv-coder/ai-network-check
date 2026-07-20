@@ -8,9 +8,11 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts packages/web-workflow/test/*.test.ts packages/web-reporting/test/*.test.ts"
+    "test": "node --experimental-strip-types --test packages/core/test/*.test.ts packages/web-benchmark/test/*.test.ts packages/web-workflow/test/*.test.ts packages/web-reporting/test/*.test.ts apps/web/test/*.test.ts",
+    "dev:web": "npm run dev -w @ai-network-check/web",
+    "build:web": "npm run build -w @ai-network-check/web"
   },
   "engines": {
-    "node": ">=22.6.0"
+    "node": ">=22.12.0"
   }
 }
