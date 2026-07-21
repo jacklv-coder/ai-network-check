@@ -113,8 +113,8 @@ test("submits only a validated service ID for network phase checks", async () =>
   assert.equal(result.source, "service-catalog");
 });
 
-test("rejects unsafe network phase service IDs before fetching", async () => {
-  await assert.rejects(
+test("rejects unsafe network phase service IDs before fetching", () => {
+  assert.throws(
     () =>
       runAgentNetworkPhaseBenchmark(
         connection,
