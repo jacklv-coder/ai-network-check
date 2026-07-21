@@ -82,6 +82,12 @@ jobs:
       - name: Run web Agent view tests
         run: node --experimental-strip-types --test apps/web/test/agent-view.test.ts
 
+      - name: Run web evidence tests
+        run: >-
+          node --experimental-strip-types --test
+          apps/web/test/evidence-session.test.ts
+          apps/web/test/evidence-view.test.ts
+
       - name: Run Local Agent tests
         run: node --experimental-strip-types --test apps/agent/test/*.test.ts
 

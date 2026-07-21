@@ -6,6 +6,7 @@ import {
   type WebSocketBenchmarkProgress
 } from "@ai-network-check/websocket-benchmark";
 
+import { evidenceSession } from "./evidence-session.ts";
 import {
   renderRealtimePanel,
   type RealtimeUiState
@@ -96,6 +97,7 @@ async function startRealtimeBenchmark(): Promise<void> {
       }
     });
     if (!runController.signal.aborted) {
+      evidenceSession.attachPublicWebSocket(result);
       setState({ phase: "result", result });
     }
   } catch (error) {
