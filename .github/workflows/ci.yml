@@ -32,7 +32,21 @@ jobs:
         run: npm install --silent
 
       - name: Run strict TypeScript checks
-        run: npm run typecheck
+        id: typecheck
+        continue-on-error: true
+        run: npm run typecheck 2>&1 | tee typecheck.log
+
+      - name: Upload TypeScript diagnostics
+        if: steps.typecheck.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-diagnostics
+          path: typecheck.log
+          retention-days: 3
+
+      - name: Enforce TypeScript checks
+        if: steps.typecheck.outcome == 'failure'
+        run: exit 1
 
       - name: Run core and browser workflow tests
         run: >-
