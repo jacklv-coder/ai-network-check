@@ -31,8 +31,27 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run test suite
-        run: npm test
+      - name: Run core and browser workflow tests
+        run: >-
+          node --experimental-strip-types --test
+          packages/core/test/*.test.ts
+          packages/web-benchmark/test/*.test.ts
+          packages/web-workflow/test/*.test.ts
+          packages/web-reporting/test/*.test.ts
+
+      - name: Run network, CLI, and evidence tests
+        run: >-
+          node --experimental-strip-types --test
+          packages/websocket-benchmark/test/*.test.ts
+          packages/cli-benchmark/test/*.test.ts
+          packages/network-phase-benchmark/test/*.test.ts
+          packages/evidence-report/test/*.test.ts
+
+      - name: Run web application tests
+        run: node --experimental-strip-types --test apps/web/test/*.test.ts
+
+      - name: Run Local Agent tests
+        run: node --experimental-strip-types --test apps/agent/test/*.test.ts
 
       - name: Run strict TypeScript checks
         run: npm run typecheck
