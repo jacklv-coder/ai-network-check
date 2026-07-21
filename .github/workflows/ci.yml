@@ -93,3 +93,12 @@ jobs:
 
       - name: Build production web app
         run: npm run build:web
+
+      - name: Build bundled Local Agent
+        run: npm run build:agent
+
+      - name: Smoke test bundled Local Agent
+        run: npm run smoke:agent
+
+      - name: Verify Local Agent package contents
+        run: npm run pack:agent
