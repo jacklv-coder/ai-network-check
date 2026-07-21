@@ -1,10 +1,20 @@
 {
   "name": "@ai-network-check/agent",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "ai-network-check-agent": "./dist/ai-network-check-agent.mjs"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "scripts": {
     "start": "node --experimental-strip-types src/cli.ts",
+    "build": "node build.mjs",
+    "smoke": "node test/distribution-smoke.mjs",
+    "pack:check": "npm pack --dry-run --json",
     "test": "node --experimental-strip-types --test test/*.test.ts"
   },
   "dependencies": {
@@ -15,7 +25,11 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "devDependencies": {
-    "@types/node": "24.10.0"
+    "@types/node": "24.10.0",
+    "esbuild": "0.28.1"
   }
 }
