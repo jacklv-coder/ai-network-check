@@ -1,16 +1,17 @@
 import { chmod, mkdir, rm } from "node:fs/promises";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 
-const root = new URL(".", import.meta.url);
-const distDirectory = resolve(root.pathname, "dist");
+const root = dirname(fileURLToPath(import.meta.url));
+const distDirectory = resolve(root, "dist");
 const outfile = resolve(distDirectory, "ai-network-check-agent.mjs");
 
 await rm(distDirectory, { recursive: true, force: true });
 await mkdir(distDirectory, { recursive: true });
 
 await build({
-  entryPoints: [resolve(root.pathname, "src/cli.ts")],
+  entryPoints: [resolve(root, "src/cli.ts")],
   outfile,
   bundle: true,
   platform: "node",
