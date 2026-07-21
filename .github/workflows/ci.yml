@@ -29,7 +29,10 @@ jobs:
           package-manager-cache: false
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --silent
+
+      - name: Run strict TypeScript checks
+        run: npm run typecheck
 
       - name: Run core and browser workflow tests
         run: >-
@@ -67,9 +70,6 @@ jobs:
 
       - name: Run Local Agent tests
         run: node --experimental-strip-types --test apps/agent/test/*.test.ts
-
-      - name: Run strict TypeScript checks
-        run: npm run typecheck
 
       - name: Build production web app
         run: npm run build:web
