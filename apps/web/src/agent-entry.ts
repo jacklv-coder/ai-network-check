@@ -11,6 +11,7 @@ import {
   type AgentConnection,
   type AgentStatusResponse
 } from "./agent-client.ts";
+import { evidenceSession } from "./evidence-session.ts";
 import {
   renderAgentPanel,
   type AgentServiceOption,
@@ -123,6 +124,7 @@ async function runCodex(status: AgentStatusResponse): Promise<void> {
       controller.signal
     );
     if (!controller.signal.aborted) {
+      evidenceSession.attachCodex(benchmark);
       setState({ phase: "result", status, benchmark });
     }
   } catch (error) {
@@ -160,6 +162,7 @@ async function runNetworkPhases(
       controller.signal
     );
     if (!controller.signal.aborted) {
+      evidenceSession.attachLocalNetwork(benchmark);
       setState({ phase: "network-result", status, benchmark });
     }
   } catch (error) {
