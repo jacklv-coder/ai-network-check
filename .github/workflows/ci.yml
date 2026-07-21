@@ -1,0 +1,89 @@
+name: Pull request quality gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22.12.0"
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm install --silent
+
+      - name: Run strict TypeScript checks
+        id: typecheck
+        continue-on-error: true
+        run: npm run typecheck 2>&1 | tee typecheck.log
+
+      - name: Upload TypeScript diagnostics
+        if: steps.typecheck.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-diagnostics
+          path: typecheck.log
+          retention-days: 3
+
+      - name: Enforce TypeScript checks
+        if: steps.typecheck.outcome == 'failure'
+        run: exit 1
+
+      - name: Run core and browser workflow tests
+        run: >-
+          node --experimental-strip-types --test
+          packages/core/test/*.test.ts
+          packages/web-benchmark/test/*.test.ts
+          packages/web-workflow/test/*.test.ts
+          packages/web-reporting/test/*.test.ts
+
+      - name: Run network, CLI, and evidence tests
+        run: >-
+          node --experimental-strip-types --test
+          packages/websocket-benchmark/test/*.test.ts
+          packages/cli-benchmark/test/*.test.ts
+          packages/network-phase-benchmark/test/*.test.ts
+          packages/evidence-report/test/*.test.ts
+
+      - name: Run web state tests
+        run: node --experimental-strip-types --test apps/web/test/state.test.ts
+
+      - name: Run web result tests
+        run: node --experimental-strip-types --test apps/web/test/result-view.test.ts
+
+      - name: Run web history tests
+        run: node --experimental-strip-types --test apps/web/test/history-view.test.ts
+
+      - name: Run web realtime tests
+        run: node --experimental-strip-types --test apps/web/test/realtime-view.test.ts
+
+      - name: Run web Agent client tests
+        run: node --experimental-strip-types --test apps/web/test/agent-client.test.ts
+
+      - name: Run web Agent view tests
+        run: node --experimental-strip-types --test apps/web/test/agent-view.test.ts
+
+      - name: Run Local Agent tests
+        run: node --experimental-strip-types --test apps/agent/test/*.test.ts
+
+      - name: Build production web app
+        run: npm run build:web
