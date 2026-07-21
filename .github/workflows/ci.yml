@@ -47,8 +47,23 @@ jobs:
           packages/network-phase-benchmark/test/*.test.ts
           packages/evidence-report/test/*.test.ts
 
-      - name: Run web application tests
-        run: node --experimental-strip-types --test apps/web/test/*.test.ts
+      - name: Run web state tests
+        run: node --experimental-strip-types --test apps/web/test/state.test.ts
+
+      - name: Run web result tests
+        run: node --experimental-strip-types --test apps/web/test/result-view.test.ts
+
+      - name: Run web history tests
+        run: node --experimental-strip-types --test apps/web/test/history-view.test.ts
+
+      - name: Run web realtime tests
+        run: node --experimental-strip-types --test apps/web/test/realtime-view.test.ts
+
+      - name: Run web Agent client tests
+        run: node --experimental-strip-types --test apps/web/test/agent-client.test.ts
+
+      - name: Run web Agent view tests
+        run: node --experimental-strip-types --test apps/web/test/agent-view.test.ts
 
       - name: Run Local Agent tests
         run: node --experimental-strip-types --test apps/agent/test/*.test.ts
